@@ -45,13 +45,13 @@ public class ConciliacionController {
             String montoStr = request.get("monto");
 
             // Convertir fecha y monto
-            Date fechaAbono = Date.valueOf(fechaAbonoStr); // yyyy-MM-dd
+            Date fechaAbono = Date.valueOf(fechaAbonoStr);
             BigDecimal monto = new BigDecimal(montoStr);
 
             return service.getConciliadoExiste(codigo, fechaAbono, monto);
         } catch (Exception e) {
             e.printStackTrace();
-            return Map.of("Existe", 0); // fallback en caso de error
+            return Map.of("Existe", 0);
         }
     }
 
@@ -72,7 +72,6 @@ public class ConciliacionController {
             return service.conciliar(codigo, fechaAbono, netoTotal, unidComId);
         } catch (Exception e) {
             e.printStackTrace();
-            // Retornar JSON de error
             return Map.of("estado", -1, "mensaje", "Error al procesar la conciliación");
         }
     }
