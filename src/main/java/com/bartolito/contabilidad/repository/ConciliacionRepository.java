@@ -2,6 +2,8 @@ package com.bartolito.contabilidad.repository;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,6 +14,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Query;
 
 @Repository
@@ -20,9 +23,25 @@ public class ConciliacionRepository {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private JdbcTemplate sigoldJdbc;
+
     public String obtenerSucursalesConciliacion() {
         StoredProcedureQuery query = em.createStoredProcedureQuery("sp_bart_conciliacion_sel_sucurzal");
         return (String) query.getSingleResult(); // devuelve directamente el JSON
+    }
+    public List<Map<String, Object>> obtenerMesesConciliacion(String codigo) {
+        String sql = "EXEC sp_bart_conciliacion_sel_meses ?";
+        return sigoldJdbc.queryForList(sql, codigo);
+    }
+    public List<Map<String, Object>> obtenerOperacionesConciliacion(String codigo, String mes) {
+        String sql = "EXEC sp_bart_conciliacion_sel_operaciones ?,? ";
+        return sigoldJdbc.queryForList(sql, codigo,mes);
+    }
+    public List<Map<String, Object>> obtenerComprobantesConciliacion(String codigo,String fechaAbono,Double netoTotal,Integer unidComId) {
+        String sql = "EXEC sp_bart_conciliacion_sel_tarjetasizipay_comprobante_grilla ?, ?, ?, ?";
+
+        return sigoldJdbc.queryForList(sql,codigo,fechaAbono,netoTotal,unidComId);
     }
 
     public String obtenerFechasConciliacion(String sucursal) {
@@ -296,5 +315,11 @@ public class ConciliacionRepository {
         }
     }
 
+    public List<Map<String, Object>> reporteConciliacionTarjetasIzipay(String codigo, Date fechaIni, Date fechaFin) {
+
+        String sql = "EXEC sp_bart_conciliacion_sel_tarjetasizipay_comprobante_reporte ?, ?, ?";
+
+        return sigoldJdbc.queryForList(sql, codigo, fechaIni, fechaFin);
+    }
 
 }

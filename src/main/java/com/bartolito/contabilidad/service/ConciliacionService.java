@@ -2,6 +2,7 @@ package com.bartolito.contabilidad.service;
 
 import com.bartolito.contabilidad.repository.ConciliacionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,6 +12,10 @@ import java.util.Map;
 
 @Service
 public class ConciliacionService {
+
+    @Autowired
+    private ConciliacionRepository repository;
+
     private final ConciliacionRepository conciliacionRepository;
 
     public ConciliacionService(ConciliacionRepository conciliacionRepository) {
@@ -28,6 +33,16 @@ public class ConciliacionService {
             e.printStackTrace();
             return Map.of("Sucursales", List.of()); // fallback vacío en caso de error
         }
+    }
+    public List<Map<String, Object>> getMeses(String codigo) {
+        return repository.obtenerMesesConciliacion(codigo);
+    }
+
+    public List<Map<String, Object>> getOperaciones(String codigo, String mes) {
+        return repository.obtenerOperacionesConciliacion(codigo, mes);
+    }
+    public List<Map<String, Object>> getComprobantes(String codigo,String fechaAbono,Double netoTotal,Integer unidComId) {
+        return repository.obtenerComprobantesConciliacion(codigo,fechaAbono,netoTotal,unidComId);
     }
 
     public Map<String, Object> getFechas(String sucursal) {
@@ -114,6 +129,16 @@ public class ConciliacionService {
             e.printStackTrace();
             return Map.of("conciliados_detalle", List.of()); // fallback vacío
         }
+    }
+
+    public List<Map<String, Object>> reporteConciliacionTarjetasIzipay(String codigo, Date fechaIni, Date fechaFin) {
+
+        // 🔥 normalizar (muy importante)
+        if (codigo == null || codigo.trim().isEmpty()) {
+            codigo = null;
+        }
+
+        return repository.reporteConciliacionTarjetasIzipay(codigo, fechaIni, fechaFin);
     }
 
 }
