@@ -30,7 +30,7 @@ public class CuentaBancariaCtaCteService {
 
     public int agregarCuentaBancariaCtaCte(
             Long ctaCteId,
-            String ctaBancDescripcion,
+            String ctaCteEmail,
             Integer tipCtaBancId,
             String entFinId,
             String monedaId,
@@ -44,7 +44,7 @@ public class CuentaBancariaCtaCteService {
 
         return repository.agregarCuentaBancariaCtaCte(
                 ctaCteId,
-                ctaBancDescripcion,
+                ctaCteEmail,
                 tipCtaBancId,
                 entFinId,
                 monedaId,
@@ -63,7 +63,7 @@ public class CuentaBancariaCtaCteService {
     public int modificarCuentaBancariaCtaCte(
             Long ctaBancId,
             Long ctaCteId,
-            String ctaBancDescripcion,
+            String ctaCteEmail,
             Integer tipCtaBancId,
             String entFinId,
             String monedaId,
@@ -78,7 +78,7 @@ public class CuentaBancariaCtaCteService {
         return repository.modificarCuentaBancariaCtaCte(
                 ctaBancId,
                 ctaCteId,
-                ctaBancDescripcion,
+                ctaCteEmail,
                 tipCtaBancId,
                 entFinId,
                 monedaId,
@@ -122,6 +122,19 @@ public class CuentaBancariaCtaCteService {
     public List<Map<String, Object>> listarTipoCuentaBancaria() {
 
         return repository.listarTipoCuentaBancaria();
+
+    }
+    public void guardarCorreo(
+            Integer ctaCteId,
+            String personaId,
+            String correo
+    ) {
+
+        repository.guardarCorreo(
+                ctaCteId,
+                personaId,
+                correo
+        );
 
     }
 }

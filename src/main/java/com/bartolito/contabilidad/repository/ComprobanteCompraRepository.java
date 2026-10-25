@@ -38,20 +38,40 @@ public class ComprobanteCompraRepository {
                 estadoPago
         );
     }
-    public List<Map<String, Object>> listarComprobantesCompraxPagar(
-            LocalDate fechaVenc,
-            String empresaId
+    public List<Map<String, Object>> obtenerPreAsientoPropuestaPago(
+            Integer propPagoCabId,
+            String numeroCuenta,
+            String detalle
     ) {
 
-        String sql = "EXEC sp_bart_conta_comprobanteCompraCabecera_x_empresa_porpagar_listar ?, ?";
+        String sql = "EXEC sp_bart_PropuestaPago_ObtenerPreAsiento ?, ?, ?";
+
+        return sigoldJdbc.queryForList(
+                sql,
+                propPagoCabId,
+                numeroCuenta,
+                detalle
+        );
+    }
+    public List<Map<String, Object>> listarComprobantesCompraxPagar(
+            LocalDate fechaVenc,
+            String empresaId,
+            String docId,
+            Integer monedaId
+    ) {
+
+        String sql =
+                "EXEC sp_bart_conta_comprobanteCompraCabecera_x_empresa_porpagar_listar ?, ?, ?, ?";
 
         List<Map<String, Object>> lista = sigoldJdbc.queryForList(
                 sql,
                 java.sql.Date.valueOf(fechaVenc),
-                empresaId
+                empresaId,
+                docId,
+                monedaId
         );
 
-        // 🔥 convertir IDs grandes a String
+        // Convertir IDs grandes a String
         lista.forEach(item -> {
 
             Object comCompCabId = item.get("ComCompCabId");

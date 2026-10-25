@@ -30,11 +30,31 @@ public class ComprobanteCompraService {
         return repository.listarComprobantesCompra(fechaInicio, fechaFin, empresaId, estadoPago);
     }
 
+    public List<Map<String, Object>> obtenerPreAsientoPropuestaPago(
+            Integer propPagoCabId,
+            String numeroCuenta,
+            String detalle
+    ) {
+
+        return repository.obtenerPreAsientoPropuestaPago(
+                propPagoCabId,
+                numeroCuenta,
+                detalle
+        );
+    }
+
     public List<Map<String, Object>> listarComprobantesCompraxPagar(
             LocalDate fechaVenc,
-            String empresaId
+            String empresaId,
+            String docId,
+            Integer monedaId
     ) {
-        return repository.listarComprobantesCompraxPagar(fechaVenc, empresaId);
+        return repository.listarComprobantesCompraxPagar(
+                fechaVenc,
+                empresaId,
+                docId,
+                monedaId
+        );
     }
 
     public List<Map<String, Object>> listarNCyND(

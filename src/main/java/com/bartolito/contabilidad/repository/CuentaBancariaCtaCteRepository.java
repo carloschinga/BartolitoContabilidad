@@ -31,7 +31,7 @@ public class CuentaBancariaCtaCteRepository {
 
     public int agregarCuentaBancariaCtaCte(
             Long ctaCteId,
-            String ctaBancDescripcion,
+            String ctaCteEmail,
             Integer tipCtaBancId,
             String entFinId,
             String monedaId,
@@ -49,7 +49,7 @@ public class CuentaBancariaCtaCteRepository {
                 sql,
                 Integer.class,
                 ctaCteId,
-                ctaBancDescripcion,
+                ctaCteEmail,
                 tipCtaBancId,
                 entFinId,
                 monedaId,
@@ -68,7 +68,7 @@ public class CuentaBancariaCtaCteRepository {
     public int modificarCuentaBancariaCtaCte(
             Long ctaBancId,
             Long ctaCteId,
-            String ctaBancDescripcion,
+            String ctaCteEmail,
             Integer tipCtaBancId,
             String entFinId,
             String monedaId,
@@ -87,7 +87,7 @@ public class CuentaBancariaCtaCteRepository {
                 Integer.class,
                 ctaBancId,
                 ctaCteId,
-                ctaBancDescripcion,
+                ctaCteEmail,
                 tipCtaBancId,
                 entFinId,
                 monedaId,
@@ -146,6 +146,23 @@ public class CuentaBancariaCtaCteRepository {
 
         return sigoldJdbc.queryForList(sql);
 
+    }
+
+    public void guardarCorreo(
+            Integer ctaCteId,
+            String personaId,
+            String correo
+    ) {
+
+        String sql =
+                "EXEC sp_bart_CuentaCorriente_Correo_Guardar ?, ?, ?";
+
+        sigoldJdbc.update(
+                sql,
+                ctaCteId,
+                personaId,
+                correo
+        );
     }
 
 }

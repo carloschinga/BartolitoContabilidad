@@ -2,9 +2,11 @@ package com.bartolito.contabilidad.controller;
 
 import com.bartolito.contabilidad.service.ComprobanteCompraService;
 import com.bartolito.contabilidad.service.CuentaBancariaCtaCteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class CuentaBancariaCtaCteController {
     public Map<String, Object> agregar(
 
             @RequestParam Long ctaCteId,
-            @RequestParam String ctaBancDescripcion,
+            @RequestParam String ctaCteEmail,
             @RequestParam Integer tipCtaBancId,
             @RequestParam String entFinId,
             @RequestParam String monedaId,
@@ -66,7 +68,7 @@ public class CuentaBancariaCtaCteController {
 
             int resultado = service.agregarCuentaBancariaCtaCte(
                     ctaCteId,
-                    ctaBancDescripcion,
+                    ctaCteEmail,
                     tipCtaBancId,
                     entFinId,
                     monedaId,
@@ -108,7 +110,7 @@ public class CuentaBancariaCtaCteController {
 
             @RequestParam Long ctaBancId,
             @RequestParam Long ctaCteId,
-            @RequestParam String ctaBancDescripcion,
+            @RequestParam String ctaCteEmail,
             @RequestParam Integer tipCtaBancId,
             @RequestParam String entFinId,
             @RequestParam String monedaId,
@@ -127,7 +129,7 @@ public class CuentaBancariaCtaCteController {
             int resultado = service.modificarCuentaBancariaCtaCte(
                     ctaBancId,
                     ctaCteId,
-                    ctaBancDescripcion,
+                    ctaCteEmail,
                     tipCtaBancId,
                     entFinId,
                     monedaId,
@@ -263,5 +265,61 @@ public class CuentaBancariaCtaCteController {
 
         return response;
 
+    }
+    @PostMapping("/guardarCorreo")
+    public ResponseEntity<Map<String, Object>> guardarCorreo(
+            @RequestBody Map<String, Object> request
+    ) {
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        try {
+
+            Integer ctaCteId =
+                    Integer.valueOf(
+                            request.get("CtaCteId").toString()
+                    );
+
+            String personaId =
+                    request.get("PersonaId").toString();
+
+            String correo =
+                    request.get("Correo").toString().trim();
+
+
+            service.guardarCorreo(
+                    ctaCteId,
+                    personaId,
+                    correo
+            );
+
+
+            response.put(
+                    "resultado",
+                    "ok"
+            );
+
+            response.put(
+                    "mensaje",
+                    "Correo actualizado correctamente."
+            );
+
+
+        } catch (Exception ex) {
+
+            response.put(
+                    "resultado",
+                    "error"
+            );
+
+            response.put(
+                    "mensaje",
+                    ex.getMessage()
+            );
+        }
+
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -32,6 +32,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
+        System.out.println("URL => " + path);
+
+
+
+
+
         if (request.getMethod().equalsIgnoreCase("OPTIONS")
                 || path.endsWith("/auth/login")
                 || path.endsWith("/auth/loginBartolito")

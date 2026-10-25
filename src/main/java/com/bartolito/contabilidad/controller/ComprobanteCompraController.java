@@ -47,16 +47,68 @@ public class ComprobanteCompraController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/listarxPagar/{fechaVenc}/{empresaId}")
-    public ResponseEntity<Map<String, Object>> listarComprasxPagar(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaVenc,
-            @PathVariable String empresaId
+    @PostMapping("/obtenerPreAsientoPropuestaPago")
+    public ResponseEntity<Map<String, Object>> obtenerPreAsientoPropuestaPago(
+            @RequestBody Map<String, Object> request
     ) {
 
-        List<Map<String, Object>> result = service.listarComprobantesCompraxPagar(
-                fechaVenc,
-                empresaId
-        );
+        Integer propPagoCabId =
+                Integer.valueOf(
+                        request.get("propPagoCabId").toString()
+                );
+
+        String numeroCuenta =
+                request.get("numeroCuenta").toString();
+
+        String detalle =
+                request.get("detalle").toString();
+
+
+        List<Map<String, Object>> result =
+                service.obtenerPreAsientoPropuestaPago(
+                        propPagoCabId,
+                        numeroCuenta,
+                        detalle
+                );
+
+
+        Map<String, Object> data = new LinkedHashMap<>();
+
+        data.put("preAsiento", result);
+
+
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        response.put("resultado", "ok");
+        response.put("data", data);
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/listarxPagar/{fechaVenc}/{empresaId}")
+    public ResponseEntity<Map<String, Object>> listarComprasxPagar(
+            @PathVariable
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            LocalDate fechaVenc,
+
+            @PathVariable
+            String empresaId,
+
+            @RequestParam(required = false)
+            String docId,
+
+            @RequestParam(required = false)
+            Integer monedaId
+    ) {
+
+        List<Map<String, Object>> result =
+                service.listarComprobantesCompraxPagar(
+                        fechaVenc,
+                        empresaId,
+                        docId,
+                        monedaId
+                );
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("compras", result);
