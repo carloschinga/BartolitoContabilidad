@@ -123,13 +123,34 @@ public class ComprobanteCompraController {
     @GetMapping("/listarNCyND/{empresaId}/{provId}")
     public ResponseEntity<Map<String, Object>> listarNCyND(
             @PathVariable String empresaId,
-            @PathVariable Long provId   // 🔥 FIX
+            @PathVariable Long provId
     ) {
 
-        List<Map<String, Object>> result = service.listarNCyND(
-                empresaId,
-                provId
-        );
+        List<Map<String, Object>> result =
+                service.listarNCyND(empresaId, provId);
+
+        // Convertir identificadores BIGINT a String
+        // antes de serializar la respuesta JSON.
+        for (Map<String, Object> comprobante : result) {
+
+            Object comCompCabId = comprobante.get("ComCompCabId");
+
+            if (comCompCabId != null) {
+                comprobante.put(
+                        "ComCompCabId",
+                        comCompCabId.toString()
+                );
+            }
+
+            Object proveedorId = comprobante.get("ProvId");
+
+            if (proveedorId != null) {
+                comprobante.put(
+                        "ProvId",
+                        proveedorId.toString()
+                );
+            }
+        }
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("comprobantes", result);
@@ -140,6 +161,8 @@ public class ComprobanteCompraController {
 
         return ResponseEntity.ok(response);
     }
+
+
 
     @GetMapping("/listarAdelantoComprobante/{empresaId}/{provId}/{adeCompMovRef}")
     public ResponseEntity<Map<String, Object>> listarAdelantoComprobante(
