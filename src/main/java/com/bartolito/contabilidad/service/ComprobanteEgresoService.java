@@ -1,3 +1,4 @@
+
 package com.bartolito.contabilidad.service;
 
 import com.bartolito.contabilidad.repository.ComprobanteEgresoRepository;
@@ -359,6 +360,18 @@ public class ComprobanteEgresoService {
 
         dto.put("documento", documento);
 
+        // NC y ND: informacion adicional del comprobante.
+        // Si no existen, no se agregan lineas vacias al correo.
+        String nc = valorTexto(item, "NC", "");
+        String nd = valorTexto(item, "ND", "");
+
+        dto.put("NC", nc);
+        dto.put("ND", nd);
+
+        String detalleNotas =
+                (nc.isEmpty() ? "" : "Nota de Crédito (NC): " + nc + "\n") +
+                        (nd.isEmpty() ? "" : "Nota de Débito (ND): " + nd + "\n");
+
         // ======================================
         // OPERACION BANCARIA
         // ======================================
@@ -417,6 +430,7 @@ public class ComprobanteEgresoService {
                         "correspondiente a la propuesta " +
                         item.get("PropPagoCodi") + ".\n\n" +
                         "Documento: " + documento + "\n" +
+                        detalleNotas +
                         "Importe: S/ " + monto + "\n" +
                         (operacionBancaria.isEmpty() ? "\n" :
                                 "N.º de operación bancaria: " + operacionBancaria + "\n\n") +

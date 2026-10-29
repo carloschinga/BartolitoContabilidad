@@ -1,5 +1,6 @@
 com\bartolito\contabilidad\repository\FondoFijoRepository.class
 com\bartolito\contabilidad\service\PropuestaPagoAprobadorService.class
+com\bartolito\contabilidad\util\JwtComercialFilter.class
 com\bartolito\contabilidad\util\JwtRequestFilter.class
 com\bartolito\contabilidad\controller\MovimientoBancoController.class
 com\bartolito\contabilidad\repository\HaberesRepository.class

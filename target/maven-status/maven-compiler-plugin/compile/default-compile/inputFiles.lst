@@ -21,6 +21,7 @@ D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\util
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\ComprobanteEgresoService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\controller\ConciliacionController.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\ReembolsoService.java
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\util\JwtComercialFilter.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\CuentaBancariaCtaCteRepository.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\FileStorageService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\SolicitudRendicionService.java

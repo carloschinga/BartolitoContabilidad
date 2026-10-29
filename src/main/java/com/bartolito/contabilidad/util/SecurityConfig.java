@@ -20,52 +20,28 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtComercialFilter jwtComercialFilter;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
-
+    public SecurityConfig(JwtComercialFilter jwtComercialFilter) {
+        this.jwtComercialFilter = jwtComercialFilter;
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
-            throws Exception {
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
-                .csrf()
-                .disable()
-
                 .cors()
-
                 .and()
-
-                .sessionManagement()
-                .sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS
-                )
-
-                .and()
-
+                .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                .antMatchers(
-                        HttpMethod.OPTIONS,
-                        "/**"
-                )
-                .permitAll()
-
-                .antMatchers(
-                        "/auth/**"
-                )
-                .permitAll()
-
-                .anyRequest()
-                .authenticated();
-
-        http.addFilterBefore(
-                jwtRequestFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+                // todos los endpoints requieren autenticación
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(jwtComercialFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
