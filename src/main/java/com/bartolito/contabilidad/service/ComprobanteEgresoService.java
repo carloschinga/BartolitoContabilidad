@@ -1,4 +1,3 @@
-
 package com.bartolito.contabilidad.service;
 
 import com.bartolito.contabilidad.repository.ComprobanteEgresoRepository;
@@ -29,6 +28,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ComprobanteEgresoService {
+
+    @org.springframework.beans.factory.annotation.Value("${bartolito.correo.prueba.masiva.habilitada:false}")
+    private boolean pruebaMasivaHabilitada;
 
     private final ComprobanteEgresoRepository repository;
     private final RestTemplate restTemplate;
@@ -171,9 +173,15 @@ public class ComprobanteEgresoService {
             for (Map<String, Object> item : elegibles) {
                 int id = Integer.parseInt(valorTexto(item, "PropPagoDetItem", "-1"));
 
-                // CAMBIO 4: solo C, procesados en ESTA solicitud, con movimiento.
+                // CAMBIO 4: notificar C, S, R y L, solo si el BCP procesó ESTE ítem.
+                String tipoRegistro = valorTexto(item, "TipoRegistro", "")
+                        .toUpperCase(java.util.Locale.ROOT);
+                boolean tipoPermitido = "C".equals(tipoRegistro)
+                        || "S".equals(tipoRegistro)
+                        || "R".equals(tipoRegistro)
+                        || "L".equals(tipoRegistro);
                 if (!itemsProcesados.contains(id)
-                        || !"C".equalsIgnoreCase(valorTexto(item, "TipoRegistro", ""))
+                        || !tipoPermitido
                         || valorTexto(item, "MovBcoCabId", "").isEmpty()) {
                     continue;
                 }
@@ -568,57 +576,72 @@ public class ComprobanteEgresoService {
             throw new IllegalStateException("Ya existe un reenvio en curso para esta propuesta.");
         }
         try {
+            // El SP valida el asiento, el movimiento y los items ejecutados.
             List<Map<String, Object>> registros = repository.obtenerCorreosReenvioValidados(propPagoCabId);
-            if (registros.isEmpty()) {
+            if (registros == null || registros.isEmpty()) {
                 throw new IllegalStateException("No hay documentos ejecutados para reenviar.");
             }
-            int elegibles = 0, aceptados = 0;
-            List<Map<String, Object>> incidencias = new ArrayList<>();
+
+            // Fase 1: validar TODO antes de publicar el primer evento.
             Set<String> claves = new LinkedHashSet<>();
+            List<Map<String, Object>> pendientes = new ArrayList<>();
+            List<Map<String, Object>> incidencias = new ArrayList<>();
             for (Map<String, Object> fila : registros) {
-                if (!"E".equalsIgnoreCase(valorTexto(fila, "PropPagoDetEstado", ""))
-                        || !"C".equalsIgnoreCase(valorTexto(fila, "TipoRegistro", ""))) continue;
-                if (valorTexto(fila, "MovBcoCabId", "").isEmpty()
-                        || valorTexto(fila, "DiaCabCompId", "").isEmpty()) continue;
                 String item = valorTexto(fila, "PropPagoDetItem", "");
+                String tipo = valorTexto(fila, "TipoRegistro", "").toUpperCase(java.util.Locale.ROOT);
                 if (item.isEmpty() || !claves.add(item)) {
-                    throw new IllegalStateException("Item repetido o sin identificador en el resultado SQL.");
+                    throw new IllegalStateException("Item repetido o sin identificador: " + item);
                 }
-                elegibles++;
+                if (!String.valueOf(propPagoCabId).equals(valorTexto(fila, "PropPagoCabId", ""))
+                        || !"E".equalsIgnoreCase(valorTexto(fila, "PropPagoDetEstado", ""))
+                        || !("C".equals(tipo) || "L".equals(tipo) || "R".equals(tipo) || "S".equals(tipo))) {
+                    throw new IllegalStateException("Item no ejecutado o tipo no permitido: " + item);
+                }
+                for (String campo : new String[]{"MovBcoCabId", "DiaCabCompId", "DiaDetItem",
+                        "OperacionBancaria", "Documento", "MontoAbonar"}) {
+                    if (valorTexto(fila, campo, "").isEmpty()) {
+                        throw new IllegalStateException("Falta " + campo + " en el item " + item);
+                    }
+                }
                 String destino = valorTexto(fila, "Correo", "");
                 if (!destino.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-                    Map<String,Object> fallo = new LinkedHashMap<>();
-                    fallo.put("item", item);
-                    fallo.put("motivo", "Correo no valido");
-                    incidencias.add(fallo);
+                    Map<String, Object> incidencia = new LinkedHashMap<>();
+                    incidencia.put("item", item);
+                    incidencia.put("motivo", "Correo ausente o no valido");
+                    incidencias.add(incidencia);
                     continue;
                 }
-                Map<String,Object> envio = new LinkedHashMap<>(fila);
-                // El campo de origen contiene una factura, NO la operacion real BCP.
-                // Conservar OperacionBancaria obtenida del HABER en SQL Server.
-                if (valorTexto(envio, "OperacionBancaria", "").isEmpty()) {
-                    throw new IllegalStateException("No se encontro el numero de planilla bancaria para el item " + item);
-                }
-                envio.put("ReenvioProduccion", true);
+                Map<String, Object> envio = new LinkedHashMap<>(fila);
+                envio.put("ReenvioProduccion", true); // No agregar CC de pruebas.
+                pendientes.add(envio);
+            }
+
+            // Fase 2: publicar exclusivamente los items prevalidos con destinatario.
+            int aceptados = 0;
+            for (Map<String, Object> envio : pendientes) {
+                String item = valorTexto(envio, "PropPagoDetItem", "");
                 try {
-                    Map<String,Object> respuesta = enviarEventoCorreoPago(envio);
+                    Map<String, Object> respuesta = enviarEventoCorreoPago(envio);
                     if (respuesta != null && Boolean.TRUE.equals(respuesta.get("estado"))) {
                         aceptados++;
                     } else {
-                        Map<String,Object> fallo = new LinkedHashMap<>();
-                        fallo.put("item", item);
-                        fallo.put("motivo", "El servicio de notificaciones no acepto el evento");
-                        incidencias.add(fallo);
+                        Map<String, Object> incidencia = new LinkedHashMap<>();
+                        incidencia.put("item", item);
+                        incidencia.put("motivo", "Publicacion no confirmada; verificar /noti antes de reintentar");
+                        incidencias.add(incidencia);
                     }
                 } catch (Exception ex) {
-                    Map<String,Object> fallo = new LinkedHashMap<>();
-                    fallo.put("item", item);
-                    fallo.put("motivo", "Error al publicar el evento; verificar RabbitMQ antes de reintentar");
-                    incidencias.add(fallo);
+                    Map<String, Object> incidencia = new LinkedHashMap<>();
+                    incidencia.put("item", item);
+                    incidencia.put("motivo", "Publicacion incierta; verificar /noti antes de reintentar");
+                    incidencias.add(incidencia);
+                    System.err.println("Reenvio incierto, propuesta " + propPagoCabId
+                            + ", item " + item + ": " + ex.getMessage());
                 }
             }
-            Map<String,Object> resultado = new LinkedHashMap<>();
-            resultado.put("documentosElegibles", elegibles);
+            Map<String, Object> resultado = new LinkedHashMap<>();
+            resultado.put("documentosElegibles", registros.size());
+            resultado.put("documentosConCorreoValido", pendientes.size());
             resultado.put("eventosAceptados", aceptados);
             resultado.put("incidencias", incidencias);
             resultado.put("estado", "PUBLICACION_FINALIZADA_VERIFICAR_ENTREGA_SMTP");
@@ -741,4 +764,72 @@ public class ComprobanteEgresoService {
 
         return resumen;
     }
+    // PRUEBA CONTROLADA: no genera comprobantes ni modifica SQL Server.
+    // El destinatario es fijo y se exige activacion explicita en properties.
+    public Map<String, Object> probarCorreosEjecutados(Integer propuestaId,
+                                                       boolean confirmarEnvio) {
+        if (!pruebaMasivaHabilitada) {
+            throw new IllegalStateException("Prueba de correos deshabilitada en el servidor.");
+        }
+        if (propuestaId == null || propuestaId <= 0) {
+            throw new IllegalArgumentException("PropPagoCabId invalido.");
+        }
+        List<Map<String, Object>> filas = repository.obtenerCorreosPropuesta(propuestaId, null);
+        if (filas.isEmpty()) {
+            throw new IllegalStateException("No hay pagos ejecutados y validados para la propuesta.");
+        }
+        if (filas.size() > 30) {
+            throw new IllegalStateException("Prueba limitada a 30 documentos por propuesta.");
+        }
+        Set<String> vistos = new LinkedHashSet<>();
+        List<Map<String, Object>> detalle = new ArrayList<>();
+        int aceptados = 0;
+        for (Map<String, Object> fila : filas) {
+            String item = valorTexto(fila, "PropPagoDetItem", "");
+            String tipo = valorTexto(fila, "TipoRegistro", "").toUpperCase(java.util.Locale.ROOT);
+            if (!vistos.add(item) || item.isEmpty()) {
+                throw new IllegalStateException("Item duplicado o sin identificador: " + item);
+            }
+            if (!("C".equals(tipo) || "S".equals(tipo) || "R".equals(tipo) || "L".equals(tipo))
+                    || valorTexto(fila, "MovBcoCabId", "").isEmpty()) {
+                throw new IllegalStateException("Pago no elegible en item " + item);
+            }
+            Map<String, Object> estado = new LinkedHashMap<>();
+            estado.put("item", item);
+            estado.put("tipo", tipo);
+            estado.put("documento", valorTexto(fila, "Documento", ""));
+            estado.put("correoPrueba", "cchinga@unjfsc.edu.pe");
+            if (!confirmarEnvio) {
+                estado.put("estado", "PREVISUALIZADO_NO_ENVIADO");
+            } else {
+                Map<String, Object> copia = new LinkedHashMap<>(fila);
+                copia.put("Correo", "cchinga@unjfsc.edu.pe");
+                copia.put("ReenvioProduccion", true); // Evita CC adicional.
+                try {
+                    Map<String, Object> respuesta = enviarEventoCorreoPago(copia);
+                    if (respuesta != null && Boolean.TRUE.equals(respuesta.get("estado"))) {
+                        estado.put("estado", "EVENTO_ACEPTADO");
+                        aceptados++;
+                    } else {
+                        estado.put("estado", "EVENTO_NO_CONFIRMADO");
+                    }
+                } catch (Exception ex) {
+                    estado.put("estado", "PUBLICACION_INCIERTA_VERIFICAR_NOTI");
+                    estado.put("motivo", ex.getMessage());
+                }
+            }
+            detalle.add(estado);
+        }
+        Map<String, Object> resumen = new LinkedHashMap<>();
+        resumen.put("PropPagoCabId", propuestaId);
+        resumen.put("modo", confirmarEnvio ? "ENVIO_PRUEBA" : "PREVISUALIZACION");
+        resumen.put("destinatario", "cchinga@unjfsc.edu.pe");
+        resumen.put("documentos", detalle.size());
+        resumen.put("eventosAceptados", aceptados);
+        resumen.put("detalle", detalle);
+        resumen.put("advertencia", "Evento aceptado no equivale a entrega SMTP. No reintentar sin revisar /noti.");
+        return resumen;
+    }
+
 }
+
