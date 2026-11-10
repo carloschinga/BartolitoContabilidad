@@ -20,14 +20,11 @@ public class ConciliacionController {
         this.service = service;
     }
 
-
-
     @PostMapping("/sucursales")
     public Map<String, Object> getFechas() {
 
         return service.getSucursales();
     }
-
 
     @GetMapping("/meses")
     public Map<String, Object> getMeses(@RequestParam(required = false) String codigo) {
