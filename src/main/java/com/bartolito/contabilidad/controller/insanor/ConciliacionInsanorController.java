@@ -1,7 +1,6 @@
 package com.bartolito.contabilidad.controller.insanor;
 
-import com.bartolito.contabilidad.repository.insanor.ConciliacionRepository;
-import com.bartolito.contabilidad.service.insanor.ConciliacionService;
+import com.bartolito.contabilidad.service.insanor.ConciliacionInsanorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +14,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/insanor/conciliacion")
-public class ConciliacionController {
+public class ConciliacionInsanorController {
 
     @Autowired
-    private ConciliacionService service;
+    private ConciliacionInsanorService service;
 
     // =========================================
     // CONCILIACIÓN - LISTAR SUCURSALES

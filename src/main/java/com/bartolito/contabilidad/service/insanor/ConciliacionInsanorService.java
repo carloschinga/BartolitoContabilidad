@@ -1,6 +1,6 @@
 package com.bartolito.contabilidad.service.insanor;
 
-import com.bartolito.contabilidad.repository.insanor.ConciliacionRepository;
+import com.bartolito.contabilidad.repository.insanor.ConciliacionInsanorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ConciliacionService {
+public class ConciliacionInsanorService {
 
     @Autowired
-    private ConciliacionRepository repository;
+    private ConciliacionInsanorRepository repository;
 
     // =========================================
     // CONCILIACIÓN - LISTAR SUCURSALES
