@@ -8,6 +8,7 @@ com\bartolito\contabilidad\repository\ComprobanteEgresoRepository.class
 com\bartolito\contabilidad\repository\PropuestaPagoRepository.class
 com\bartolito\contabilidad\service\ComprobanteEgresoService.class
 com\bartolito\contabilidad\repository\ComprobanteCompraRepository.class
+com\bartolito\contabilidad\service\insanor\ConciliacionInsanorService.class
 com\bartolito\contabilidad\controller\ConciliacionBancariaController.class
 com\bartolito\contabilidad\service\ConciliacionService.class
 com\bartolito\contabilidad\controller\CuentaBancariaCtaCteController.class
@@ -19,6 +20,7 @@ com\bartolito\contabilidad\controller\CentroCostoController.class
 com\bartolito\contabilidad\repository\CentroCostoRepository.class
 com\bartolito\contabilidad\repository\SolicitudPagoRepository.class
 com\bartolito\contabilidad\service\FondoFijoService.class
+com\bartolito\contabilidad\controller\insanor\ConciliacionInsanorController.class
 com\bartolito\contabilidad\controller\ComprobanteIngresoController.class
 com\bartolito\contabilidad\controller\LetrasController.class
 com\bartolito\contabilidad\repository\ConciliacionRepository.class
@@ -64,5 +66,6 @@ com\bartolito\contabilidad\config\PrimaryDataSourceConfig.class
 com\bartolito\contabilidad\controller\UsuarioController.class
 com\bartolito\contabilidad\service\SolicitudPagoService.class
 com\bartolito\contabilidad\controller\SolicitudPagoController.class
+com\bartolito\contabilidad\repository\insanor\ConciliacionInsanorRepository.class
 com\bartolito\contabilidad\repository\ReembolsoRepository.class
 com\bartolito\contabilidad\service\BartSumatoriaFormaPagoService.class
