@@ -1,4 +1,5 @@
-package com.bartolito.contabilidad.controller;
+
+        package com.bartolito.contabilidad.controller;
 
 
 import com.bartolito.contabilidad.service.ComprobanteEgresoService;
@@ -763,5 +764,39 @@ public class ComprobanteEgresoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
-}
+    // Endpoint temporal de pruebas: solo usuario autenticado y bandera del servidor.
+    @PostMapping("/probarCorreosEjecutados")
+    public ResponseEntity<Map<String, Object>> probarCorreosEjecutados(
+            @RequestBody Map<String, Object> request,
+            HttpServletRequest httpRequest) {
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        if (httpRequest.getUserPrincipal() == null) {
+            respuesta.put("resultado", "prohibido");
+            respuesta.put("mensaje", "Se requiere usuario autenticado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+        }
+        try {
+            if (request == null || request.get("PropPagoCabId") == null) {
+                throw new IllegalArgumentException("Falta PropPagoCabId.");
+            }
+            Integer id = Integer.valueOf(request.get("PropPagoCabId").toString());
+            boolean confirmar = Boolean.TRUE.equals(request.get("ConfirmarEnvio"));
+            respuesta.put("resultado", "ok");
+            respuesta.put("data", service.probarCorreosEjecutados(id, confirmar));
+            return ResponseEntity.ok(respuesta);
+        } catch (IllegalArgumentException ex) {
+            respuesta.put("resultado", "error");
+            respuesta.put("mensaje", ex.getMessage());
+            return ResponseEntity.badRequest().body(respuesta);
+        } catch (IllegalStateException ex) {
+            respuesta.put("resultado", "bloqueado");
+            respuesta.put("mensaje", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
+        } catch (Exception ex) {
+            respuesta.put("resultado", "error");
+            respuesta.put("mensaje", "Error en prueba de correos. Revisar logs.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
+        }
+    }
 
+}

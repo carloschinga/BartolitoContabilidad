@@ -64,7 +64,12 @@ public class ComprobanteEgresoRepository {
                 request.get("NumeroPlanilla").toString());
     }
     public List<Map<String, Object>> obtenerCorreosPropuesta(Integer propPagoCabId, Long movBcoCabId) {
-        return sigoldJdbc.queryForList("EXEC sp_bart_PropuestaPago_Correos_Obtener ?, ?", propPagoCabId, movBcoCabId);
+        if (propPagoCabId == null || propPagoCabId <= 0) {
+            throw new IllegalArgumentException("PropPagoCabId invalido.");
+        }
+        return sigoldJdbc.queryForList(
+                "EXEC dbo.sp_bart_PropuestaPago_Correos_Obtener ?, ?",
+                propPagoCabId, movBcoCabId);
     }
 
     // Solo lectura: devuelve un movimiento real por cada comprobante ejecutado.
