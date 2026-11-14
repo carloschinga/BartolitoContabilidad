@@ -46,6 +46,20 @@ public class MovimientoBancoRepository {
                 diaCabCompId
         );
 
+
+    }
+
+    public List<Map<String, Object>> obtenerMontoComprobante(
+            Long diaCabCompId) {
+
+        String sql =
+                "SELECT MovBcoCabId, " +
+                        "       SUM(MovBcoDetMonto) AS MontoBanco " +
+                        "FROM dbo.MovimientoBancoDetalle " +
+                        "WHERE DiaCabCompId = ? " +
+                        "GROUP BY MovBcoCabId";
+
+        return sigoldJdbc.queryForList(sql, diaCabCompId);
     }
 
 }

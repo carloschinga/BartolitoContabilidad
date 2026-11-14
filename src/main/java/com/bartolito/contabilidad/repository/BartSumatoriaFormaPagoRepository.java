@@ -25,4 +25,19 @@ public class BartSumatoriaFormaPagoRepository {
 
         return jdbcTemplate.queryForList(sql);
     }
+    public List<Map<String, Object>> buscarLiquidacionPorMonto(
+            java.math.BigDecimal monto) {
+
+        String sql =
+                "SELECT sumatoria_forma_pago_id, " +
+                        "       operacion_id, " +
+                        "       fecha_operacion, " +
+                        "       total " +
+                        "FROM dbo.bart_sumatoria_forma_pago " +
+                        "WHERE docpag = 'EF' " +
+                        "  AND estado = 1 " +
+                        "  AND total = ?";
+
+        return jdbcTemplate.queryForList(sql, monto);
+    }
 }
