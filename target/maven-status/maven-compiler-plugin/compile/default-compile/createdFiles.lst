@@ -4,9 +4,11 @@ com\bartolito\contabilidad\util\JwtComercialFilter.class
 com\bartolito\contabilidad\util\JwtRequestFilter.class
 com\bartolito\contabilidad\controller\MovimientoBancoController.class
 com\bartolito\contabilidad\repository\HaberesRepository.class
+com\bartolito\contabilidad\util\dto\insanor\sumatoria\FechaRequest.class
 com\bartolito\contabilidad\repository\ComprobanteEgresoRepository.class
 com\bartolito\contabilidad\repository\PropuestaPagoRepository.class
 com\bartolito\contabilidad\service\ComprobanteEgresoService.class
+com\bartolito\contabilidad\controller\insanor\SumatoriaInsanorController.class
 com\bartolito\contabilidad\repository\ComprobanteCompraRepository.class
 com\bartolito\contabilidad\service\insanor\ConciliacionInsanorService.class
 com\bartolito\contabilidad\controller\ConciliacionBancariaController.class
@@ -35,6 +37,7 @@ com\bartolito\contabilidad\repository\BartSumatoriaFormaPagoRepository.class
 com\bartolito\contabilidad\dto\PagoProveedorRequest.class
 com\bartolito\contabilidad\repository\EmpresaRepository.class
 com\bartolito\contabilidad\service\SolicitudRendicionService.class
+com\bartolito\contabilidad\service\insanor\SumatoriaInsanorService.class
 com\bartolito\contabilidad\repository\MovimientoBancoRepository.class
 com\bartolito\contabilidad\service\MovimientoBancoService.class
 com\bartolito\contabilidad\util\JwtUtil.class
@@ -43,6 +46,7 @@ com\bartolito\contabilidad\service\CuentaBancariaCtaCteService.class
 com\bartolito\contabilidad\controller\SolicitudRendicionController.class
 com\bartolito\contabilidad\controller\ComprobanteEgresoController.class
 com\bartolito\contabilidad\controller\PropuestaPagoAprobadorController.class
+com\bartolito\contabilidad\repository\insanor\SumatoriaInsanorRepository.class
 com\bartolito\contabilidad\service\CentroCostoService.class
 com\bartolito\contabilidad\repository\UsuarioRepository.class
 com\bartolito\contabilidad\service\ComprobanteIngresoService.class
@@ -55,6 +59,7 @@ com\bartolito\contabilidad\controller\ComprobanteCompraController.class
 com\bartolito\contabilidad\util\SecurityConfig.class
 com\bartolito\contabilidad\controller\FondoFijoController.class
 com\bartolito\contabilidad\repository\CuentaBancariaCtaCteRepository.class
+com\bartolito\contabilidad\config\LolcliDataSourceConfig.class
 com\bartolito\contabilidad\repository\LetrasRepository.class
 com\bartolito\contabilidad\service\ComprobanteCompraService.class
 com\bartolito\contabilidad\config\LolfarDataSourceConfig.class

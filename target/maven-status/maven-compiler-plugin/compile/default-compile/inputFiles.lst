@@ -1,7 +1,10 @@
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\config\LolcliDataSourceConfig.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\PropuestaPagoRepository.java
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\util\dto\insanor\sumatoria\FechaRequest.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\UsuarioService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\util\JwtRequestFilter.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\ConciliacionBancariaRepository.java
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\controller\insanor\SumatoriaInsanorController.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\controller\HaberesController.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\BartSumatoriaFormaPagoRepository.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\insanor\ConciliacionInsanorService.java
@@ -45,7 +48,9 @@ D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\cont
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\controller\PropuestaPagoAprobadorController.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\CentroCostoService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\ConciliacionRepository.java
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\insanor\SumatoriaInsanorService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\FondoFijoRepository.java
+D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\insanor\SumatoriaInsanorRepository.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\insanor\ConciliacionInsanorRepository.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\service\LetrasService.java
 D:\Bartolito\BartolitoContabilidad\src\main\java\com\bartolito\contabilidad\repository\SolicitudRendicionRepository.java
