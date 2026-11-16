@@ -30,6 +30,21 @@ public class UsuarioRepository {
         );
 
     }
+
+    public List<Map<String, Object>> listarUsuariosLolcli(
+            Integer usecodLOLCLI
+    ) {
+
+        String sql =
+                "EXEC sp_bart_ins_listar_usuario_lolcli ?";
+
+        return sigoldJdbc.queryForList(
+                sql,
+                usecodLOLCLI
+        );
+
+    }
+
     public List<Map<String, Object>> obtenerEquivalenciaUsuarioLolfar(
             String usecodLOLFAR
     ) {

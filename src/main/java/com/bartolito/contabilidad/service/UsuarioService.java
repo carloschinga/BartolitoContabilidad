@@ -29,6 +29,16 @@ public class UsuarioService {
 
     }
 
+    public List<Map<String, Object>> listarUsuariosLolcli(
+            Integer usecodLOLCLI
+    ) {
+
+        return repository.listarUsuariosLolcli(
+                usecodLOLCLI
+        );
+
+    }
+
     public List<Map<String, Object>> obtenerEquivalenciaUsuarioLolfar(
             String usecodLOLFAR
     ) {
