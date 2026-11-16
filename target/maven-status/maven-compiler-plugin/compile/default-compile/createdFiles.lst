@@ -38,6 +38,7 @@ com\bartolito\contabilidad\dto\PagoProveedorRequest.class
 com\bartolito\contabilidad\repository\EmpresaRepository.class
 com\bartolito\contabilidad\service\SolicitudRendicionService.class
 com\bartolito\contabilidad\service\insanor\SumatoriaInsanorService.class
+com\bartolito\contabilidad\config\SigoldesDataSourceConfig.class
 com\bartolito\contabilidad\repository\MovimientoBancoRepository.class
 com\bartolito\contabilidad\service\MovimientoBancoService.class
 com\bartolito\contabilidad\util\JwtUtil.class
