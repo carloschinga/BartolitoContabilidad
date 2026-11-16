@@ -106,4 +106,44 @@ public class UsuarioController {
         );
 
     }
+
+    @GetMapping("/listar-usuario-lolcli")
+    public ResponseEntity<Map<String, Object>> listarUsuariosLolcli(
+
+            @RequestParam Integer usecodLOLCLI
+
+    ) {
+
+        List<Map<String, Object>> result =
+                service.listarUsuariosLolcli(
+                        usecodLOLCLI
+                );
+
+        Map<String, Object> data =
+                new LinkedHashMap<>();
+
+        data.put(
+                "usuarios",
+                result
+        );
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put(
+                "resultado",
+                "ok"
+        );
+
+        response.put(
+                "data",
+                data
+        );
+
+        return ResponseEntity.ok(
+                response
+        );
+
+    }
+
 }
