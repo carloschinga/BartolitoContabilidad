@@ -1,5 +1,6 @@
 package com.bartolito.contabilidad.repository.insanor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,14 +14,9 @@ import java.util.Map;
 @Repository
 public class SumatoriaInsanorRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    public SumatoriaInsanorRepository(
-            @Qualifier("lolcliJdbcTemplate")
-            JdbcTemplate jdbcTemplate) {
-
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @Autowired
+    @Qualifier("lolcliJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
     // =========================================
     // SUMATORIA FORMA DE PAGO - GUARDAR / ACTUALIZAR
